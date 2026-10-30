@@ -46,14 +46,14 @@ col_input, col_spacer, col_pipeline = st.columns([5, 0.5, 4])
 with col_input:
     topic = st.text_input(
         "Research Topic",
-        placeholder="e.g. Artificial Intellegence breakthroughs in 2026",
+        placeholder="e.g. Quantum computing breakthroughs in 2025",
         key="topic_input",
         label_visibility="visible",
     )
     run_btn = st.button("Run Research Pipeline", use_container_width=True)
 
     # Example topics
-    examples = ["LLM agents 2026", "CRISPR gene editing", "Fusion energy progress"]
+    examples = ["LLM agents 2025", "CRISPR gene editing", "Fusion energy progress"]
     st.caption("Try: " + "  |  ".join(examples))
 
 with col_pipeline:
@@ -63,7 +63,8 @@ with col_pipeline:
     done = st.session_state.done
 
     def s(step):
-        if not r:
+        r = st.session_state.results   # re-read so live updates see fresh results
+        if not r and not st.session_state.running:
             return "waiting"
         steps = ["search", "reader", "writer", "critic"]
         idx = steps.index(step)
@@ -78,10 +79,21 @@ with col_pipeline:
                     return "running" if k == step else "waiting"
         return "waiting"
 
-    step_card("01", "Search Agent",  s("search"), "Gathers recent web information")
-    step_card("02", "Reader Agent",  s("reader"), "Scrapes & extracts deep content")
-    step_card("03", "Writer Chain",  s("writer"), "Drafts the full research report")
-    step_card("04", "Critic Chain",  s("critic"), "Reviews & scores the report")
+    # one placeholder per step so cards can be redrawn while the pipeline runs
+    step_slots = [st.empty() for _ in range(4)]
+
+    def render_steps():
+        step_defs = [
+            ("01", "Search Agent", "search", "Gathers recent web information"),
+            ("02", "Reader Agent", "reader", "Scrapes & extracts deep content"),
+            ("03", "Writer Chain", "writer", "Drafts the full research report"),
+            ("04", "Critic Chain", "critic", "Reviews & scores the report"),
+        ]
+        for slot, (num, title, key, desc) in zip(step_slots, step_defs):
+            with slot.container():
+                step_card(num, title, s(key), desc)
+
+    render_steps()
 
 
 # ── Run pipeline ──────────────────────────────────────────────────────────────
@@ -106,6 +118,7 @@ if st.session_state.running and not st.session_state.done:
         })
         results["search"] = sr["messages"][-1].content
         st.session_state.results = dict(results)
+    render_steps()
     st.rerun() if False else None   # keep inline for now
 
     # ── Step 2: Reader ──
@@ -120,6 +133,7 @@ if st.session_state.running and not st.session_state.done:
         })
         results["reader"] = rr["messages"][-1].content
         st.session_state.results = dict(results)
+    render_steps()
 
     # ── Step 3: Writer ──
     with st.spinner("Writer is drafting the report…"):
@@ -132,6 +146,7 @@ if st.session_state.running and not st.session_state.done:
             "research": research_combined
         })
         st.session_state.results = dict(results)
+    render_steps()
 
     # ── Step 4: Critic ──
     with st.spinner("Critic is reviewing the report…"):
@@ -139,6 +154,7 @@ if st.session_state.running and not st.session_state.done:
             "report": results["writer"]
         })
         st.session_state.results = dict(results)
+    render_steps()
 
     st.session_state.running = False
     st.session_state.done = True
