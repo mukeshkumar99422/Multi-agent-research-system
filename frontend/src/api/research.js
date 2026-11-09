@@ -32,3 +32,11 @@ export async function* streamResearch(topic, signal) {
 
   yield* parseSSE(res.body)
 }
+
+
+/**
+ * warm up backend while user type api
+ */
+export function warmUpBackend() {
+  fetch(`${API_BASE_URL}/health`).catch(() => {});
+}

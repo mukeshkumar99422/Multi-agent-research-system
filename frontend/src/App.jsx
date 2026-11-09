@@ -4,10 +4,15 @@ import ResultsPanel from './components/ResultsPanel'
 import TopicForm from './components/TopicForm'
 import { useResearch } from './hooks/useResearch'
 import { assets } from './assets/assets'
+import { warmUpBackend } from './api/research'
+import { useEffect } from 'react'
 
 export default function App() {
   const { status, stepStatus, outputs, error, start, cancel } = useResearch()
 
+  useEffect(()=>{
+    warmUpBackend()
+  },[])
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
