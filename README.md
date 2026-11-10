@@ -88,8 +88,8 @@ The frontend sends the topic with a POST request and reads the response as a str
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/mukeshkumar99422/Multi-agent-research-system.git
+cd Multi-agent-research-system
 ```
 
 ### 2. Run the backend
