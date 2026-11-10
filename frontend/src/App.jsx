@@ -16,14 +16,25 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-baseline gap-2 px-4">
-            <img src={assets.logo}
+        <div className="mx-auto flex max-w-6xl items-baseline justify-between px-4 pb-1">
+            <img 
+              src={assets.logo}
               alt="ResearchMind Logo"
               width={50}
             />
-            <span className="text-5xl font-bold" style={{ fontFamily: 'sans-serif' }}>
-              Research Mind
-            </span>
+            <a
+              href={import.meta.env.VITE_GITHUB_REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub repository"
+            >
+              <img 
+                src={assets.githubLogo} 
+                alt="Github Repo" 
+                width={40}
+                className='opacity-75'
+                />
+            </a>
         </div>
       </header>
 
