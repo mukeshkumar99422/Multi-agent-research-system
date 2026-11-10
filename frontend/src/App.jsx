@@ -63,7 +63,20 @@ export default function App() {
       </main>
 
       <footer className="pb-8 text-center text-sm text-slate-500">
-        ResearchMind · Powered by LangChain multi-agent pipeline · Built with React
+        Powered by LangChain multi-agent pipeline · Built with React
+        {import.meta.env.VITE_GITHUB_REPO && (
+          <>
+            {' · '}
+            <a
+              href={import.meta.env.VITE_GITHUB_REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-slate-700"
+            >
+              GitHub repository
+            </a>
+          </>
+        )}
       </footer>
     </div>
   )
